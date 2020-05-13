@@ -232,3 +232,170 @@ for (i in seq(along = foo)) {
 names(data.blocks.data.frame) <- headers[is.valid.data.frame]
 print(lapply(data.blocks.data.frame, head), width = 132)
 
+# not want to compare with old data sets (2016)
+
+d <- "/home/geyer/ClassNotes/5421/Data"
+cmd <- paste("find", d, "-type f",
+    "\\( -name 'exercise-*.txt' -o -name 'table-*.txt' \\)")
+files <- system(cmd, intern = TRUE)
+files
+
+files.base <- basename(files)
+sort(files.base)
+
+files.key <- sub("\\.txt$", "", files.base)
+files.key <- sub("-", "s* ", files.key)
+files.key
+files.idx <- sapply(files.key,
+    function(x) grep(x, headers, ignore.case = TRUE))
+files.idx
+headers
+
+# Arrrrrgh!
+# Table 10.9 is for Exercise 10.4.  I guess I added this.  It is not
+#     in the current HTML data
+# Table 4.11 is for Exercise 4.13.  Have to match latter.
+# Table 8.18 is for Exercise 8.8.  I guess I added this.  It is not
+#     in the current HTML data
+
+files.key[files.key == "tables* 4.11"] <- "exercises* 4.13"
+files.idx <- lapply(files.key,
+    function(x) grep(x, headers, ignore.case = TRUE))
+files.idx <- sapply(files.idx, function (x) if (length(x) == 0) NA else x)
+files.idx <- files.idx[! is.na(files.idx)]
+files.idx
+setdiff(headers, headers[files.idx])
+
+# I guess there were a bunch we skipped in 2016
+# and 2 we added
+# so much for x-check with that
+#
+# skip x-check for now
+
+# Extract data set names from headers
+
+headers.table <- sub("^.*(Table [0-9.]*).*$", "\\1", headers)
+headers.table
+! any(grepl("Table.*Table", headers))
+# Got all the tables
+headers.exercise <- sub("^.*(Exercise [0-9.]*).*$", "\\1", headers)
+! any(grepl("Exercise.*Exercise", headers))
+headers.exercise
+# Got all the exercises, not!
+idouble <- grep("Exercises", headers)
+headers[idouble]
+# also there is one left
+headers.section <- sub("^.*(Section [0-9.]*).*$", "\\1", headers)
+headers.section
+
+headers.is.table <-
+    sapply(strsplit(headers.table, split = "  *"), length) == 2
+headers.table[headers.is.table]
+headers.is.exercise <-
+    sapply(strsplit(headers.exercise, split = "  *"), length) == 2
+headers.exercise[headers.is.exercise]
+headers.is.section <-
+    sapply(strsplit(headers.section, split = "  *"), length) == 2
+headers.section[headers.is.section]
+headers.is.other <- ! (headers.is.table | headers.is.exercise |
+    headers.is.section)
+headers[headers.is.other]
+headers[headers.is.table & headers.is.exercise]
+
+# OK!  Ready to write data files and help files
+
+unlink("../package/CDA/data", recursive = TRUE, expand = FALSE)
+unlink("../package/CDA/man", recursive = TRUE, expand = FALSE)
+dir.create("../package/CDA/data", recursive = TRUE)
+dir.create("../package/CDA/man", recursive = TRUE)
+
+datasetnames <- rep(NA_character_, length(headers))
+datasetnames[headers.is.section] <- headers.section[headers.is.section]
+datasetnames[headers.is.exercise] <- headers.exercise[headers.is.exercise]
+datasetnames[headers.is.table] <- headers.table[headers.is.table]
+foo <- sub("^.*Exercises ([0-9.]*) and ([0-9.]*)", "\\1 \\2", headers)
+foo[headers.is.other]
+foo <- unlist(strsplit(foo[headers.is.other], " "))
+foo
+datasetnames[headers.is.other] <- paste("Exercise", foo[1])
+datasetaliases <- rep(NA_character_, length(headers))
+datasetaliases[headers.is.other] <- paste("Exercise", foo[2])
+datasetaliases[headers.is.table & headers.is.exercise] <-
+    headers.exercise[headers.is.table & headers.is.exercise]
+datasetnames <- tolower(datasetnames)
+datasetaliases <- tolower(datasetaliases)
+datasetnames <- sub(" ", "_", datasetnames)
+datasetaliases <- sub(" ", "_", datasetaliases)
+datasetnames
+datasetaliases
+dataset.is.duplicated <- duplicated(datasetnames)
+dataset.is.duplicated
+# for now just let duplicate overwrite the other
+
+datasets <- list()
+datasets[is.valid.data.frame] <- data.blocks.data.frame
+datasets[! is.valid.data.frame] <- data.blocks.tables.data.frames
+names(datasets) <- datasetnames
+# datasets
+
+for (i in seq(along = datasets)) {
+    foo <- names(datasets)[i]
+    assign(foo, datasets[[i]])
+    save(list = foo,
+        file = file.path("../package/CDA/data", paste0(foo, ".rda")))
+}
+
+# Woot!  Now write man pages.
+
+setwd("../package/CDA/man")
+
+for (i in seq(along = headers)) {
+    myname <- datasetnames[i]
+    myalias <- datasetaliases[i]
+    filename <- paste0(myname, ".Rd")
+    cat("i =", i, ", myname =", myname, ", myalias =", myalias,
+        ", file =", filename, "\n")
+    mycat <- function(..., sep = "", append = TRUE)
+        cat(..., file = filename, sep = sep, append = append)
+    mycat("\\name{", myname, "}\n", append = FALSE)
+    mycat("\\docType{data}\n")
+    mycat("\\alias{", myname, "}\n")
+    if (! is.na(myalias))
+        mycat("\\alias{", myalias, "}\n")
+    mytitle <- headers[i]
+    mytitle <- sub("[0-9]*\\. ", "", mytitle)
+    mytitle <- trimws(mytitle)
+    mydescription <- paste0(mytitle, ".")
+    mytitle <- tools::toTitleCase(mytitle)
+    mycat("\\title{", mytitle, "}\n")
+    mycat("\\description{", mydescription, "}\n")
+    mycat("\\usage{data(", myname, ")}\n")
+    mycat("\\format{A data frame containing", nrow(datasets[[i]]),
+        "observations (rows)\n", sep = " ")
+    varnames <- names(datasets[[i]])
+    mycat("  and the following columns:\n")
+    mycat("  \\describe{\n")
+    for (vn in varnames)
+        mycat("  \\item{", vn, "}{}\n")
+    mycat("  }\n")
+    mycat("}\n")
+    mycat("\\source{\\url{http://www.stat.ufl.edu/~aa/cda/data.html}}\n")
+    mycat("\\references{\n")
+    mycat("  Agresti, A. (2013)\n")
+    mycat("  \\emph{Categorical Data Analysis}, Third Edition.\n")
+    mycat("  Hoboken, NJ: John Wiley \\& Sons.\n")
+    mycat("  ISBN: 978-0-470-46363-5.\n")
+    mycat("}\n")
+    if (! is.valid.data.frame[i]) {
+        mycat("\\examples{\n")
+        mycat("# in the source was a table rather than a data frame\n")
+        mycat("# to convert to a table do\n")
+        mycat("data(", myname, ")\n")
+        mycat(myname, "_as_table <- xtabs(counts ~ ., data = ", myname, ")\n")
+        mycat("\\dontrun{", myname, "_as_table}\n")
+        mycat("}\n")
+    }
+    cat("\\keyword{datasets}\n", file = filename, append = TRUE)
+}
+
+headers[! is.valid.data.frame]

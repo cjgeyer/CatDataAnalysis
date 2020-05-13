@@ -1,3 +1,5 @@
 *.Rout
 *.txt
 *.html
+*.tar.gz
+*.Rcheck
