@@ -368,7 +368,11 @@ for (i in seq(along = headers)) {
     mydescription <- paste0(mytitle, ".")
     mytitle <- tools::toTitleCase(mytitle)
     mycat("\\title{", mytitle, "}\n")
-    mycat("\\description{", mydescription, "}\n")
+    mycat("\\description{", mydescription)
+    if (is.na(innies[i])) {
+        mycat(para.blocks[i])
+    }
+    mycat("}\n")
     mycat("\\usage{data(", myname, ")}\n")
     mycat("\\format{A data frame containing", nrow(datasets[[i]]),
         "observations (rows)\n", sep = " ")
