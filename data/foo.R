@@ -1,4 +1,6 @@
 
+our.package.name <- "CatDataAnalysis"
+
 library("xml2")
 
 u <- "http://www.stat.ufl.edu/~aa/cda/data.html"
@@ -19,6 +21,7 @@ para.blocks <- xml_text(bar)
 
 length(headers)
 length(data.blocks)
+length(para.blocks)
 
 # One Bogus Header
 headers <- headers[seq(along = data.blocks)]
@@ -304,10 +307,12 @@ headers[headers.is.table & headers.is.exercise]
 
 # OK!  Ready to write data files and help files
 
-unlink("../package/CDA/data", recursive = TRUE, expand = FALSE)
-unlink("../package/CDA/man", recursive = TRUE, expand = FALSE)
-dir.create("../package/CDA/data", recursive = TRUE)
-dir.create("../package/CDA/man", recursive = TRUE)
+data.dir.name <- file.path("../package", our.package.name, "data")
+help.dir.name <- file.path("../package", our.package.name, "man")
+unlink(data.dir.name, recursive = TRUE, expand = FALSE)
+unlink(help.dir.name, recursive = TRUE, expand = FALSE)
+dir.create(data.dir.name, recursive = TRUE)
+dir.create(help.dir.name, recursive = TRUE)
 
 datasetnames <- rep(NA_character_, length(headers))
 datasetnames[headers.is.section] <- headers.section[headers.is.section]
@@ -341,13 +346,13 @@ names(datasets) <- datasetnames
 for (i in seq(along = datasets)) {
     foo <- names(datasets)[i]
     assign(foo, datasets[[i]])
-    save(list = foo,
-        file = file.path("../package/CDA/data", paste0(foo, ".rda")))
+    save(list = foo, version = 2,
+        file = file.path(data.dir.name, paste0(foo, ".rda")))
 }
 
 # Woot!  Now write man pages.
 
-setwd("../package/CDA/man")
+setwd(help.dir.name)
 
 for (i in seq(along = headers)) {
     myname <- datasetnames[i]
@@ -369,8 +374,8 @@ for (i in seq(along = headers)) {
     mytitle <- tools::toTitleCase(mytitle)
     mycat("\\title{", mytitle, "}\n")
     mycat("\\description{", mydescription)
-    if (is.na(innies[i])) {
-        mycat(para.blocks[i])
+    if (i == 1) {
+        mycat(para.blocks[is.na(innies)])
     }
     mycat("}\n")
     mycat("\\usage{data(", myname, ")}\n")

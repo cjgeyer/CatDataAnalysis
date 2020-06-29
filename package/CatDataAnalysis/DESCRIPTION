@@ -1,10 +1,10 @@
 Package: CatDataAnalysis
-Version: 0.1
-Date: 2020-05-13
+Version: 0.1-1
+Date: 2020-05-26
 Title: Datasets for Categorical Data Analysis by Agresti
 Author: Alan Agresti <aa@stat.ufl.edu>
 Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
-Depends: R (>= 3.5.0)
-Description: Datasets used in the book Categorical Data Analysis
-   by Agresti but not printed in the book.
+Depends: R (>= 2.14.0)
+Description: Datasets used in the book "Categorical Data Analysis"
+   by Agresti (2012, ISBN:978-0-470-46363-5) but not printed in the book.
 License: GPL (>= 2)

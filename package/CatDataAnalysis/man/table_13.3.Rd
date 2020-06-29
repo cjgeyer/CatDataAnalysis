@@ -1,8 +1,8 @@
 \name{table_13.3}
 \docType{data}
 \alias{table_13.3}
-\title{Attitudes About Abortion Data Set of Table 13.3, Incontigency Table Form}
-\description{Attitudes about abortion data set of Table 13.3, incontigency table form.}
+\title{Attitudes About Abortion Data Set of Table 13.3}
+\description{Attitudes about abortion data set of Table 13.3.}
 \usage{data(table_13.3)}
 \format{A data frame containing 16 observations (rows)
   and the following columns:

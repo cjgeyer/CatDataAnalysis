@@ -1,8 +1,8 @@
 \name{table_10.1}
 \docType{data}
 \alias{table_10.1}
-\title{Alcohol, Cigarette, and Marijuana Use, by Gender and Race, Asin Table 10.1}
-\description{Alcohol, cigarette, and marijuana use, by gender and race, asin Table 10.1.}
+\title{Alcohol, Cigarette, and Marijuana Use, by Gender and Race, as in Table 10.1}
+\description{Alcohol, cigarette, and marijuana use, by gender and race, as in Table 10.1.}
 \usage{data(table_10.1)}
 \format{A data frame containing 32 observations (rows)
   and the following columns:
