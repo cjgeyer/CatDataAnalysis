@@ -5,7 +5,7 @@ To install, do (in R)
     library(remotes)
     install_github("cjgeyer/CatDataAnalysis", subdir = "package/CatDataAnalysis")
 
-Of course, you don't need the `install.package` command if you have already
+Of course, you don't need the `install.packages` command if you have already
 installed CRAN package `remotes`.
 
 After you have done the installation
