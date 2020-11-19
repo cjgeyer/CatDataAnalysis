@@ -1,5 +1,5 @@
 
-Now on [CRAN](cran.r-project.org).
+Now on [CRAN](https://cran.r-project.org).
 
 To install, do (in R)
 
