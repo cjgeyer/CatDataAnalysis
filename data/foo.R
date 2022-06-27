@@ -3,7 +3,7 @@ our.package.name <- "CatDataAnalysis"
 
 library("xml2")
 
-u <- "http://www.stat.ufl.edu/~aa/cda/data.html"
+u <- "https://users.stat.ufl.edu/~aa/cda/data.html"
 cmd <- paste("wget --no-clobber",
     "--user-agent='Mozilla/5.0 (X11; Linux i586; rv:31.0)",
     "Gecko/20100101 Firefox/73.0'", u)

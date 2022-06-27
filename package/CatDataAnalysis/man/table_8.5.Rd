@@ -12,7 +12,7 @@
   \item{happy}{}
   }
 }
-\source{\url{http://www.stat.ufl.edu/~aa/cda/data.html}}
+\source{\url{https://users.stat.ufl.edu/~aa/cda/data.html}}
 \references{
   Agresti, A. (2013)
   \emph{Categorical Data Analysis}, Third Edition.
