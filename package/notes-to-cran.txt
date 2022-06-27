@@ -1,0 +1,10 @@
+Complaints about URL https://users.stat.ufl.edu/~aa/cda/data.html being
+"(possibly) invalid" are themselves bogus, as can be checked by
+visiting said URL in a web browser
+
+This URL has been changed in this version to point to where the old URL
+redirects to as per e-mail from Uwe Ligges
+
+This version replaces \& by & (unescaped) in Rd files
+
+This version also fixes an omitted space between words in DESCRIPTION file
