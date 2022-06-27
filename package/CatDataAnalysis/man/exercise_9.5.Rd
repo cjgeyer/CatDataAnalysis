@@ -18,7 +18,7 @@
 \references{
   Agresti, A. (2013)
   \emph{Categorical Data Analysis}, Third Edition.
-  Hoboken, NJ: John Wiley \& Sons.
+  Hoboken, NJ: John Wiley & Sons.
   ISBN: 978-0-470-46363-5.
 }
 \keyword{datasets}

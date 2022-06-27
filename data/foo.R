@@ -392,7 +392,7 @@ for (i in seq(along = headers)) {
     mycat("\\references{\n")
     mycat("  Agresti, A. (2013)\n")
     mycat("  \\emph{Categorical Data Analysis}, Third Edition.\n")
-    mycat("  Hoboken, NJ: John Wiley \\& Sons.\n")
+    mycat("  Hoboken, NJ: John Wiley & Sons.\n")
     mycat("  ISBN: 978-0-470-46363-5.\n")
     mycat("}\n")
     if (! is.valid.data.frame[i]) {
